@@ -1,0 +1,24 @@
+dependent: &dependant
+    type: 'continuant'
+    description: 'arnold'
+
+health_process_1:
+    type: 'process'
+    description: 'MESH:D010612'
+    depends_on:
+        - *dependant
+    start_time: 
+         123029032
+    end_time: 
+         123031232
+
+health_process_2:
+    type: 'process'
+    description: 'MESH:D007251'
+    depends_on:
+        - *dependant
+    start_time: 
+         123029032
+    end_time: 
+         123031232
+
