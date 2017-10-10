@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h3 id="example-of-things">Example of things</h3>
+<p>This is an attempt to translate the BFO structure to protobuf, in order to allow for dynamic transformation and extension of it.</p>
+<h2 id="goals">Goals:</h2>
+<ul>
+<li>The mid-term goal is to have a formal mechanism for reasoning about spatial and temporal entities.</li>
+<li>Reducing the verbosity of qualitatively identical objects will allow for a more succinct way of expressing knowledge.</li>
+<li>Allowing for rapid development of new subject ontologies</li>
+<li>Allowing for transfer of general algorithms by using similar behaviour of the underlying objects.</li>
+</ul>
+<h3 id="list-of-things-to-do">List of things to do</h3>
+<ul>
+<li>Transfer the complete definition of BFO to basic protobuf definitions</li>
+<li><a href="#entity">Entity</a></li>
+<li><a href="#continuant">Continuant</a></li>
+<li><a href="#occurrent">Occurrent</a></li>
+</ul>
+<h4 id="entity">Entity</h4>
+<p>Contains</p>
+<ul>
+<li>A term</li>
+<li>A repeated subentity</li>
+</ul>
+<h3 id="level-0">Level 0</h3>
+<h4 id="continuant">Continuant</h4>
+<p>An object that persists over time</p>
+<p>Contains:</p>
+<ul>
+<li>Description</li>
+</ul>
+<h4 id="occurrent">Occurrent</h4>
+<p>A temporal entity with continuant participants</p>
+<p>Contains:</p>
+<ul>
+<li>Description</li>
+<li>Participating continuants</li>
+</ul>
+<p>Examples:</p>
+<blockquote>
+<pre><code>import Occurrent
+occurrent = Occurrent(description = &#39;example&#39;, participants = [Entity1, Entity2])
+occurrent.find_similar_occurrents()</code></pre>
+</blockquote>
+<h3 id="level-1">Level 1</h3>
+<h4 id="process">Process</h4>
+<p>An occurrent that unfolds over a certain time interval</p>
+<p>Contains:</p>
+<ul>
+<li>Description</li>
+<li>Start time</li>
+<li>End time</li>
+</ul>
+<p>Basic Examples:</p>
+<blockquote>
+<pre><code>import Process
+import Continuant
+me = Continuant(snr = &#39;123092039&#39;)
+occurrent = Process(description = &#39;life&#39;, participants = Me, start_time = st, end_time = None)
+occurrent.start_time</code></pre>
+</blockquote>
+<p>Advanced Examples:</p>
+<blockquote>
+<pre><code># Find entities existing at overlapping temporal regions
+overlapping_processes = occurrent.find(lambda (x,y): x∩y and y.decription == life)
+print(overlapping_processes[0])
+&gt;&gt;&gt; Process(decription = &#39;life&#39;, participants = Continuant(...))</code></pre>
+</blockquote>
+<p>Application Examples:</p>
+<blockquote>
+<pre><code># Instantiate health processes
+import health_process_similarity
+health_process = Process(description = &#39;MESH://D010612&#39;, participants = Continuant(snr = &#39;12329929&#39;))
+health_process.find_similar_processes(similarity_algorithm = health_process_similarity) </code></pre>
+</blockquote>
+<p>Here, a health_process_similarity algorithm would have dependencies on deeper qualities within the continuants and/or processes which make up the health process. For example, it could perform</p>
+<blockquote>
+<pre><code># Infer the process type by stepping up in an external ontology hierarchy
+process_type = health_process.infer_process_type()
+print(process_type)
+&gt;&gt;&gt; &#39;disease_condition&#39;
+my_disease_processes = health_process.participants.participation_in_processses_of_type(process_type)</code></pre>
+</blockquote>
+<h4 id="process-boundary">Process boundary</h4>
+<p>An occurrent that manifests at a specified time</p>
+<p>Contains</p>
+<ul>
+<li>Time stamp</li>
+</ul>
+<p>Basic examples:</p>
+<blockquote>
+<pre><code>process_boundary = ProcessBoundary(description = &#39;Fall of Berlin wall&#39;, time_stamp = datetime(1989,11,09))
+# Find process boundaries manifested at neighboring temporal regions
+nearby_process_boundaries = process_boundary.find_nearby()</code></pre>
+</blockquote>
+<h4 id="generically-dependent-continuant">Generically dependent continuant</h4>
+<p>An information containing continuant, not dependent on a preserved continuant bearer</p>
+<h4 id="specifically-dependent-continuant">Specifically dependent continuant</h4>
+<p>A quality-containing continuant, which depends on preserved continuant bearer</p>
+<p>Something that depends_on a certain instance of an independent continuant</p>
+<p>Contains:</p>
+<h4 id="independent-continuant">Independent continuant</h4>
+<p>An independent continuant</p>
+<p>Such as an object, a person, a thing with a specified boundary</p>
+</body>
+</html>

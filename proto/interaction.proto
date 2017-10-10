@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package protobuf_world;
+
+// A transaction is an Occurrent entity in which two entities performing a transaction
+// participate. They can each receive a resource, and in the process of the transaction, resources can be 
+// consumed and or generated
+message Transaction {
+    TransactionalEntity transactee_1 = 1;
+    TransactionalEntity transactee_2 = 2;
+    Resource transactee_1_given = 3;
+    Resource transactee_2_given = 4;
+    google.protobuf.Timestamp datetime = 5;
+    Resource generated_resource = 6;
+    Resource consumed_resource = 7;
+}
+
+// Intended to be any entity which performs a transaction. For example a person or organization
+message TransactionalEntity {
+    string name = 1;
+    EntityRole type = 2;
+
+    enum EntityRole {
+    TRANSACTEE = 0;
+    }
+}
+
+// Any resource which can be described with a physical quantity (mass objects, objects, monies)
+message Resource {
+    string description = 1;
+    PhysicalQuantity physical_quantity = 2;
+}
+
+// 
+message PhysicalQuantity {
+    int32 value = 1;
+    string dimension = 2;
+}
+
+// 
+message TransactionHistory {
+    repeated Transaction transactions = 1;
+}
+

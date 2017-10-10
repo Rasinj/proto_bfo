@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+package protobuf_world;
+
+message Entity {
+    string term = 1;
+    repeated Entity sub_entity = 2;
+}
+
+// Level 0
+message Continuant {
+    string description = 1;
+}
+
+message Occurrent {
+    string description = 1;
+    repeated Continuant participants = 2;
+    google.protobuf.Timestamp datetime = 3;
+}
+
+// Level 
+
+// Example: The processof a life of a person1
+message Process { 
+    string description = 1;
+    repeated Continuant participants = 2;
+    ProcessBoundary start_process_boundary = 3;
+    ProcessBoundary end_process_boundary = 4;
+    }
+
+// Example: The event of birth of a person
+message ProcessBoundary { 
+    string description = 1;
+    google.protobuf.Timestamp timestamp = 2;
+    }
+
+// Example: The time between a starting and ending point
+message TemporalRegion { 
+    string description = 1;
+    google.protobuf.Timestamp start_timestamp = 2;
+    google.protobuf.Timestamp end_timestamp = 3;
+    }
+
+message SpatioTemporalRegion {
+    string description = 1;
+    TemporalRegion temporal_region = 2;
+    SpatialRegion spatial_region = 3;
+    }
+
+message SpatialRegion {
+    string description = 1;
+    string placeholder_spatialregiondata = 2;
+    }
+
+// Level 2 
+message History {
+    string description = 1;
+    Continuant participant= 2;
+    SpatioTemporalRegion spatiotemporal_region = 3;
+    }
+
+// An entity, such as a uniquely identifiable tiger
+message MaterialEntity{
+    Continuant continuant = 1;
+}
+
+// A spatial region or boundary
+message ImmaterialEntity{
+    Continuant continuant = 1;
+}
+
+// Specifially dependent entities
+message RealizableEntity{
+    Continuant continuant = 1;
+}
+
+message RealizableEntity{
+    Continuant continuant = 1;
+}
+
+message Quality{
+    Continuant continuant = 1;
+}
+
+// Level 3
+
+message RealizableQuality{
+    Continuant continuant = 1;
+}
+
+message Role{
+    Continuant continuant = 1;
+}
+
+message Disposition{
+    Continuant continuant = 1;
+}
+
+// Level 4
+
+message RelationalQuality {
+    string description = 1;
+    Continuant relational_receiver = 2;
+    Continuant relational_giver = 3;
+    bool invert_relation = 4:;
+}
+
