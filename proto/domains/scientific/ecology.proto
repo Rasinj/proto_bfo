@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package protobuf_world.domains.scientific;
+
+import "proto/core/bfo_core.proto";
+import "proto/common/units.proto";
+import "proto/common/identifiers.proto";
+import "proto/common/references.proto";
+
+// Ecological systems domain
+// TODO: Implement organism and population modeling
+// TODO: Add ecosystem components
+// TODO: Include ecological interactions (predation, competition, symbiosis)
+// TODO: Model biodiversity and conservation concepts
+
+message Organism {
+    protobuf_world.MaterialEntity material_entity = 1;
+    string taxon = 2;
+    string ncbi_taxonomy_id = 3;
+    // Add more fields
+}
+
+message Ecosystem {
+    protobuf_world.ImmaterialEntity spatial_region = 1;
+    repeated Organism organisms = 2;
+    // Add more fields
+}
+
+// Placeholder for additional ecology messages

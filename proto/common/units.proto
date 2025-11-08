@@ -1,0 +1,128 @@
+syntax = "proto3";
+
+package protobuf_world.common;
+
+// SI Base Units as defined by the International System of Units
+enum SIBaseUnit {
+    SI_BASE_UNIT_UNSPECIFIED = 0;
+    METER = 1;      // Length (m)
+    KILOGRAM = 2;   // Mass (kg)
+    SECOND = 3;     // Time (s)
+    AMPERE = 4;     // Electric current (A)
+    KELVIN = 5;     // Thermodynamic temperature (K)
+    MOLE = 6;       // Amount of substance (mol)
+    CANDELA = 7;    // Luminous intensity (cd)
+}
+
+// Common derived SI units
+enum SIDerivedUnit {
+    SI_DERIVED_UNIT_UNSPECIFIED = 0;
+    // Mechanical
+    NEWTON = 1;         // Force (kg⋅m⋅s⁻²)
+    PASCAL = 2;         // Pressure (kg⋅m⁻¹⋅s⁻²)
+    JOULE = 3;          // Energy (kg⋅m²⋅s⁻²)
+    WATT = 4;           // Power (kg⋅m²⋅s⁻³)
+    // Electrical
+    VOLT = 5;           // Electric potential (kg⋅m²⋅s⁻³⋅A⁻¹)
+    FARAD = 6;          // Capacitance (kg⁻¹⋅m⁻²⋅s⁴⋅A²)
+    OHM = 7;            // Resistance (kg⋅m²⋅s⁻³⋅A⁻²)
+    SIEMENS = 8;        // Conductance (kg⁻¹⋅m⁻²⋅s³⋅A²)
+    WEBER = 9;          // Magnetic flux (kg⋅m²⋅s⁻²⋅A⁻¹)
+    TESLA = 10;         // Magnetic flux density (kg⋅s⁻²⋅A⁻¹)
+    HENRY = 11;         // Inductance (kg⋅m²⋅s⁻²⋅A⁻²)
+    // Frequency and radioactivity
+    HERTZ = 12;         // Frequency (s⁻¹)
+    BECQUEREL = 13;     // Radioactivity (s⁻¹)
+    GRAY = 14;          // Absorbed dose (m²⋅s⁻²)
+    SIEVERT = 15;       // Equivalent dose (m²⋅s⁻²)
+    // Photometry
+    LUMEN = 16;         // Luminous flux (cd⋅sr)
+    LUX = 17;           // Illuminance (cd⋅sr⋅m⁻²)
+    // Chemical
+    KATAL = 18;         // Catalytic activity (mol⋅s⁻¹)
+}
+
+// Common non-SI units
+enum CommonUnit {
+    COMMON_UNIT_UNSPECIFIED = 0;
+    // Time
+    MINUTE = 1;
+    HOUR = 2;
+    DAY = 3;
+    WEEK = 4;
+    MONTH = 5;
+    YEAR = 6;
+    // Volume
+    LITER = 10;
+    MILLILITER = 11;
+    // Mass
+    GRAM = 20;
+    MILLIGRAM = 21;
+    MICROGRAM = 22;
+    TON = 23;
+    // Length
+    CENTIMETER = 30;
+    MILLIMETER = 31;
+    KILOMETER = 32;
+    // Temperature
+    CELSIUS = 40;
+    FAHRENHEIT = 41;
+    // Concentration
+    MOLAR = 50;         // mol/L
+    MILLIMOLAR = 51;
+    MICROMOLAR = 52;
+    NANOMOLAR = 53;
+    // Biological
+    DALTON = 60;        // Molecular mass
+    BASEPAIR = 61;      // DNA/RNA length
+    // Currency (placeholder - use specific currency codes)
+    CURRENCY_USD = 100;
+    CURRENCY_EUR = 101;
+    CURRENCY_GBP = 102;
+}
+
+// Dimensional analysis representation for custom units
+message UnitDimension {
+    string symbol = 1;                      // Unit symbol (e.g., "m/s", "kg⋅m²⋅s⁻²")
+    repeated SIBaseUnit base_units = 2;     // Base units involved
+    repeated int32 exponents = 3;           // Exponents for each base unit
+    double scale_factor = 4;                // Conversion factor to SI base units (default: 1.0)
+}
+
+// Quantity with value and unit
+message QuantityValue {
+    double value = 1;                       // Numerical value
+    oneof unit {
+        SIBaseUnit si_base = 2;
+        SIDerivedUnit si_derived = 3;
+        CommonUnit common = 4;
+        UnitDimension custom = 5;
+    }
+    double uncertainty = 6;                 // Measurement uncertainty (±)
+    string notes = 7;                       // Additional context
+}
+
+// Physical quantity with dimensional information (replaces simple PhysicalQuantity)
+message PhysicalQuantity {
+    QuantityValue quantity = 1;
+    string dimension_name = 2;              // e.g., "mass", "length", "temperature"
+}
+
+// Range of values
+message QuantityRange {
+    QuantityValue min_value = 1;
+    QuantityValue max_value = 2;
+    QuantityValue typical_value = 3;
+}
+
+// Vector quantity (e.g., velocity, force)
+message VectorQuantity {
+    repeated double components = 1;         // Vector components
+    oneof unit {
+        SIBaseUnit si_base = 2;
+        SIDerivedUnit si_derived = 3;
+        CommonUnit common = 4;
+        UnitDimension custom = 5;
+    }
+    string coordinate_system = 6;           // e.g., "cartesian", "spherical"
+}

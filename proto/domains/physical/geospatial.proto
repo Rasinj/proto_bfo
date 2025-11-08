@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package protobuf_world.domains.physical;
+
+import "proto/core/bfo_core.proto";
+import "proto/common/units.proto";
+import "proto/common/identifiers.proto";
+
+// Geographic and spatial information
+// TODO: Implement coordinate systems
+// TODO: Add geographic features
+// TODO: Include movement and navigation
+// TODO: Model spatial relationships
+
+message GeographicLocation {
+    protobuf_world.SpatialRegion spatial_region = 1;
+    double latitude = 2;
+    double longitude = 3;
+    double elevation = 4;
+    string coordinate_system = 5;
+    // Add more fields
+}
+
+message GeographicFeature {
+    protobuf_world.MaterialEntity feature = 1;
+    GeographicLocation location = 2;
+    // Add more fields
+}
+
+// Placeholder for additional geospatial messages

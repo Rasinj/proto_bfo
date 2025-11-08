@@ -1,0 +1,183 @@
+syntax = "proto3";
+
+package protobuf_world.common;
+
+import "proto/common/identifiers.proto";
+
+// Generic ontology term reference
+message OntologyReference {
+    string ontology_name = 1;               // e.g., "GO", "MESH", "UBERON", "CHEBI"
+    string term_id = 2;                     // Ontology-specific ID (e.g., "GO:0008150")
+    string term_label = 3;                  // Human-readable term name
+    string term_definition = 4;             // Term definition
+    repeated string synonyms = 5;           // Alternative names
+    protobuf_world.common.URI ontology_uri = 6;  // Link to ontology resource
+    string version = 7;                     // Ontology version
+}
+
+// Medical Subject Headings (MeSH) reference
+message MeSHReference {
+    string mesh_id = 1;                     // e.g., "D010612" for Pharyngitis
+    string descriptor_name = 2;             // Main heading
+    repeated string tree_numbers = 3;       // MeSH tree position(s)
+    repeated string qualifiers = 4;         // Subheadings
+    string scope_note = 5;                  // Definition/usage notes
+    repeated string entry_terms = 6;        // Synonyms/alternative terms
+}
+
+// Gene Ontology (GO) reference
+message GOReference {
+    string go_id = 1;                       // e.g., "GO:0008150"
+    string go_term = 2;                     // Term name
+    GOAspect aspect = 3;                    // Biological process, molecular function, or cellular component
+    string definition = 4;
+    repeated string is_a = 5;               // Parent terms
+    repeated string part_of = 6;            // Part-of relationships
+
+    enum GOAspect {
+        GO_ASPECT_UNSPECIFIED = 0;
+        BIOLOGICAL_PROCESS = 1;
+        MOLECULAR_FUNCTION = 2;
+        CELLULAR_COMPONENT = 3;
+    }
+}
+
+// SNOMED CT (clinical terminology) reference
+message SNOMEDCTReference {
+    string concept_id = 1;                  // SNOMED CT concept ID
+    string fully_specified_name = 2;        // Full concept name
+    string preferred_term = 3;              // Common usage term
+    repeated string synonyms = 4;
+    string semantic_tag = 5;                // e.g., "disorder", "procedure"
+    repeated string parent_concepts = 6;    // IS-A relationships
+}
+
+// Human Phenotype Ontology (HPO) reference
+message HPOReference {
+    string hp_id = 1;                       // e.g., "HP:0000001"
+    string term_name = 2;                   // Phenotype term
+    string definition = 3;
+    repeated string synonyms = 4;
+    string frequency = 5;                   // Occurrence frequency if known
+}
+
+// Uberon (anatomical ontology) reference
+message UberonReference {
+    string uberon_id = 1;                   // e.g., "UBERON:0000955"
+    string anatomical_term = 2;             // Anatomical structure name
+    string definition = 3;
+    string species = 4;                     // Applicable species
+    repeated string part_of = 5;            // Anatomical hierarchy
+}
+
+// Chemical Entities of Biological Interest (ChEBI) reference
+message ChEBIReference {
+    string chebi_id = 1;                    // e.g., "CHEBI:15377"
+    string chebi_name = 2;                  // Chemical name
+    string definition = 3;
+    protobuf_world.common.ChemicalIdentifier chemical_id = 4;  // InChI, SMILES, etc.
+    string formula = 5;                     // Molecular formula
+    repeated string is_a = 6;               // Chemical classification
+}
+
+// Disease Ontology (DO) reference
+message DiseaseOntologyReference {
+    string do_id = 1;                       // e.g., "DOID:4"
+    string disease_name = 2;
+    string definition = 3;
+    repeated string synonyms = 4;
+    repeated string xrefs = 5;              // Cross-references (ICD, SNOMED, etc.)
+}
+
+// Sequence Ontology (SO) reference
+message SequenceOntologyReference {
+    string so_id = 1;                       // e.g., "SO:0000001"
+    string term_name = 2;                   // Sequence feature type
+    string definition = 3;
+}
+
+// Cell Ontology (CL) reference
+message CellOntologyReference {
+    string cl_id = 1;                       // e.g., "CL:0000000"
+    string cell_type = 2;                   // Cell type name
+    string definition = 3;
+    repeated string markers = 4;            // Cellular markers
+}
+
+// Experimental Factor Ontology (EFO) reference
+message EFOReference {
+    string efo_id = 1;                      // e.g., "EFO:0000001"
+    string term_name = 2;
+    string definition = 3;
+    string category = 4;                    // disease, phenotype, anatomy, etc.
+}
+
+// Relations Ontology (RO) - for relationships between entities
+message RelationOntologyReference {
+    string ro_id = 1;                       // e.g., "RO:0002202" for "develops from"
+    string relation_name = 2;               // Relationship type
+    string definition = 3;
+    bool is_transitive = 4;                 // Transitivity property
+    bool is_symmetric = 5;                  // Symmetry property
+}
+
+// Environment Ontology (ENVO) reference
+message ENVOReference {
+    string envo_id = 1;                     // e.g., "ENVO:00000001"
+    string environment_term = 2;            // Environmental feature
+    string definition = 3;
+}
+
+// Information Artifact Ontology (IAO) reference
+message IAOReference {
+    string iao_id = 1;                      // e.g., "IAO:0000001"
+    string artifact_type = 2;               // Information artifact type
+    string definition = 3;
+}
+
+// Protein Ontology (PRO) reference
+message ProteinOntologyReference {
+    string pro_id = 1;                      // e.g., "PR:000000001"
+    string protein_name = 2;
+    string definition = 3;
+    repeated string organisms = 4;          // Applicable organisms
+}
+
+// Ontology for Biomedical Investigations (OBI) reference
+message OBIReference {
+    string obi_id = 1;                      // e.g., "OBI:0000001"
+    string investigation_term = 2;          // Investigation/assay type
+    string definition = 3;
+}
+
+// Units of Measurement Ontology (UO) reference
+message UnitsOntologyReference {
+    string uo_id = 1;                       // e.g., "UO:0000001"
+    string unit_name = 2;                   // Unit of measurement
+    string definition = 3;
+    string dimension = 4;                   // Physical dimension
+}
+
+// Multi-ontology reference - for entities annotated with multiple ontologies
+message MultiOntologyReference {
+    repeated OntologyReference references = 1;
+    string primary_ontology = 2;            // Which ontology is primary
+    map<string, string> cross_references = 3; // Cross-reference mappings
+}
+
+// Annotation with evidence
+message OntologyAnnotation {
+    OntologyReference term = 1;             // The ontology term
+    string evidence_code = 2;               // Evidence code (e.g., ECO codes)
+    repeated string supporting_refs = 3;    // Publications (DOI, PMID)
+    string curator = 4;                     // Who made the annotation
+    string annotation_date = 5;             // When annotation was made
+    double confidence_score = 6;            // Confidence in annotation (0-1)
+}
+
+// Collection of related ontology terms
+message OntologyTermSet {
+    string set_name = 1;                    // Name of the term set
+    repeated OntologyReference terms = 2;   // Collection of terms
+    string description = 3;                 // Purpose of this term set
+}

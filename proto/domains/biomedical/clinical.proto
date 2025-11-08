@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package protobuf_world.domains.biomedical;
+
+import "proto/core/bfo_core.proto";
+import "proto/common/units.proto";
+import "proto/common/identifiers.proto";
+import "proto/common/references.proto";
+import "google/protobuf/timestamp.proto";
+
+// Clinical medicine domain
+// TODO: Implement patient records
+// TODO: Add clinical measurements and observations
+// TODO: Include treatment protocols
+// TODO: Model clinical encounters and care episodes
+
+message Patient {
+    protobuf_world.MaterialEntity organism = 1;
+    string patient_id = 2;
+    // Add more fields
+}
+
+message ClinicalMeasurement {
+    protobuf_world.Quality measured_quality = 1;
+    protobuf_world.common.PhysicalQuantity value = 2;
+    google.protobuf.Timestamp measurement_time = 3;
+    // Add more fields
+}
+
+// Placeholder for additional clinical messages

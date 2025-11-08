@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package protobuf_world.domains.information;
+
+import "proto/core/bfo_core.proto";
+import "proto/common/identifiers.proto";
+import "proto/common/references.proto";
+import "google/protobuf/timestamp.proto";
+
+// Information content entities and documents
+// TODO: Implement document types
+// TODO: Add metadata and versioning
+// TODO: Include authorship and provenance
+// TODO: Model document relationships
+
+message InformationContentEntity {
+    string description = 1;
+    protobuf_world.MaterialEntity bearer = 2;
+    bytes data = 3;
+    string format = 4;
+    // Add more fields
+}
+
+message Document {
+    InformationContentEntity ice = 1;
+    string title = 2;
+    repeated string authors = 3;
+    google.protobuf.Timestamp creation_date = 4;
+    // Add more fields
+}
+
+// Placeholder for additional information messages

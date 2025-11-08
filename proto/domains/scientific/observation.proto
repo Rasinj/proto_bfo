@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package protobuf_world.domains.scientific;
+
+import "proto/core/bfo_core.proto";
+import "proto/common/units.proto";
+import "proto/common/identifiers.proto";
+import "proto/common/references.proto";
+import "google/protobuf/timestamp.proto";
+
+// Scientific observation and experimentation
+// TODO: Implement observation protocols
+// TODO: Add measurement instruments
+// TODO: Include experimental design
+// TODO: Model data collection and analysis
+
+message Observation {
+    protobuf_world.Process observation_process = 1;
+    protobuf_world.MaterialEntity observer = 2;
+    protobuf_world.MaterialEntity observed_entity = 3;
+    protobuf_world.Quality observed_quality = 4;
+    protobuf_world.SpatioTemporalRegion location = 5;
+    // Add more fields
+}
+
+message Experiment {
+    protobuf_world.Process experimental_process = 1;
+    repeated Observation observations = 2;
+    // Add more fields
+}
+
+// Placeholder for additional observation messages

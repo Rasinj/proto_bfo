@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package protobuf_world.domains.biomedical;
+
+import "proto/core/bfo_core.proto";
+import "proto/common/units.proto";
+import "proto/common/identifiers.proto";
+import "proto/common/references.proto";
+import "google/protobuf/timestamp.proto";
+
+// Disease modeling - diseases as pathological processes
+// TODO: Implement full disease ontology integration
+// TODO: Add disease progression tracking
+// TODO: Include comorbidity relationships
+
+message Disease {
+    protobuf_world.Process disease_process = 1;
+    protobuf_world.MaterialEntity affected_organism = 2;
+    repeated protobuf_world.Quality pathological_qualities = 3;
+    string mesh_id = 4;
+    string icd_code = 5;
+    // Add more fields as needed
+}
+
+// Placeholder for additional biomedical messages

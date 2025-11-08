@@ -1,0 +1,145 @@
+syntax = "proto3";
+
+package protobuf_world.common;
+
+// Generic URI for web resources
+message URI {
+    string uri = 1;                         // Full URI
+    string scheme = 2;                      // e.g., "http", "https", "ftp"
+    string authority = 3;                   // Domain and port
+    string path = 4;                        // Resource path
+    string query = 5;                       // Query parameters
+    string fragment = 6;                    // Fragment identifier
+}
+
+// Digital Object Identifier (DOI) for academic publications
+message DOI {
+    string identifier = 1;                  // e.g., "10.1234/example.2023"
+    URI resolved_url = 2;                   // URL where DOI resolves
+}
+
+// Open Researcher and Contributor ID
+message ORCID {
+    string identifier = 1;                  // Format: 0000-0002-1825-0097
+    string display_name = 2;                // Researcher name
+    URI profile_url = 3;                    // ORCID profile URL
+}
+
+// International Standard Book Number
+message ISBN {
+    string isbn13 = 1;                      // 13-digit ISBN
+    string isbn10 = 2;                      // 10-digit ISBN (legacy)
+}
+
+// International Standard Serial Number (for journals/periodicals)
+message ISSN {
+    string identifier = 1;                  // Format: 1234-5678
+    string title = 2;                       // Publication title
+}
+
+// PubMed ID for biomedical literature
+message PMID {
+    string identifier = 1;                  // PubMed ID
+    URI pubmed_url = 2;                     // Link to PubMed entry
+}
+
+// ArXiv identifier for preprints
+message ArXivID {
+    string identifier = 1;                  // e.g., "2301.12345"
+    string category = 2;                    // Subject category
+}
+
+// Universally Unique Identifier
+message UUID {
+    string uuid = 1;                        // Format: 550e8400-e29b-41d4-a716-446655440000
+    int32 version = 2;                      // UUID version (1-5)
+}
+
+// Generic Identifier with namespace
+message Identifier {
+    string namespace = 1;                   // Identifier namespace (e.g., "NCBI", "UniProt")
+    string value = 2;                       // Identifier value
+    string version = 3;                     // Version if applicable
+    URI authority_url = 4;                  // URL of issuing authority
+}
+
+// Chemical identifiers
+message ChemicalIdentifier {
+    oneof identifier_type {
+        string cas_number = 1;              // CAS Registry Number
+        string inchi = 2;                   // International Chemical Identifier
+        string inchi_key = 3;               // InChI Key (hashed)
+        string smiles = 4;                  // Simplified molecular-input line-entry system
+        string pubchem_cid = 5;             // PubChem Compound ID
+        string chebi_id = 6;                // ChEBI (Chemical Entities of Biological Interest)
+    }
+}
+
+// Biological database identifiers
+message BiologicalIdentifier {
+    oneof identifier_type {
+        string uniprot_id = 1;              // UniProt protein ID
+        string pdb_id = 2;                  // Protein Data Bank ID
+        string ncbi_gene_id = 3;            // NCBI Gene ID
+        string ensembl_id = 4;              // Ensembl gene/transcript ID
+        string refseq_id = 5;               // RefSeq accession
+        string go_id = 6;                   // Gene Ontology term ID
+        string ncbi_taxonomy_id = 7;        // NCBI Taxonomy ID
+    }
+}
+
+// Medical/clinical identifiers
+message MedicalIdentifier {
+    oneof identifier_type {
+        string icd10_code = 1;              // ICD-10 diagnosis code
+        string icd11_code = 2;              // ICD-11 diagnosis code
+        string snomed_ct_code = 3;          // SNOMED CT concept ID
+        string loinc_code = 4;              // LOINC (lab test/observation)
+        string rxnorm_code = 5;             // RxNorm (medication)
+        string ndc_code = 6;                // National Drug Code
+        string mesh_id = 7;                 // Medical Subject Headings
+        string umls_cui = 8;                // UMLS Concept Unique Identifier
+    }
+}
+
+// Geographic identifiers
+message GeographicIdentifier {
+    oneof identifier_type {
+        string geonames_id = 1;             // GeoNames ID
+        string iso_3166_country = 2;        // ISO 3166 country code
+        string fips_code = 3;               // FIPS location code
+        string what3words = 4;              // What3Words address
+    }
+    string display_name = 5;                // Human-readable name
+}
+
+// Legal entity identifiers
+message LegalEntityIdentifier {
+    oneof identifier_type {
+        string lei = 1;                     // Legal Entity Identifier
+        string duns = 2;                    // D-U-N-S Number
+        string ein = 3;                     // Employer Identification Number (US)
+        string vat_id = 4;                  // VAT identification number
+        string company_registration = 5;    // Company registration number
+    }
+    string jurisdiction = 6;                // Legal jurisdiction
+}
+
+// Personal identifiers (use with privacy considerations)
+message PersonalIdentifier {
+    oneof identifier_type {
+        string ssn = 1;                     // Social Security Number (use carefully!)
+        string passport_number = 2;         // Passport number
+        string driver_license = 3;          // Driver's license number
+        string national_id = 4;             // National ID number
+    }
+    string issuing_country = 5;             // Country that issued ID
+    string issuing_authority = 6;           // Specific authority
+}
+
+// Composite identifier for entities with multiple IDs
+message CompositeIdentifier {
+    Identifier primary = 1;                 // Primary identifier
+    repeated Identifier alternate_ids = 2;  // Alternative identifiers
+    map<string, string> metadata = 3;       // Additional metadata
+}
