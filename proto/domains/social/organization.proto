@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package protobuf_world.domains.social;
+
+import "proto/core/bfo_core.proto";
+import "proto/common/units.proto";
+import "proto/common/identifiers.proto";
+import "proto/common/references.proto";
+
+// Social and organizational structures
+// TODO: Implement organization hierarchies
+// TODO: Add membership and roles
+// TODO: Include organizational processes
+// TODO: Model social relationships
+
+message Person {
+    MaterialEntity organism = 1;
+    string identifier = 2;
+    repeated Role social_roles = 3;
+    // Add more fields
+}
+
+message Organization {
+    MaterialEntity material_entity = 1;
+    repeated Person members = 2;
+    string legal_identifier = 3;
+    // Add more fields
+}
+
+// Placeholder for additional organization messages

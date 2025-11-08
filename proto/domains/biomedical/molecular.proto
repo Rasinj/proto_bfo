@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package protobuf_world.domains.biomedical;
+
+import "proto/core/bfo_core.proto";
+import "proto/common/units.proto";
+import "proto/common/identifiers.proto";
+import "proto/common/references.proto";
+
+// Molecular biology domain
+// TODO: Implement biochemical reactions
+// TODO: Add gene expression modeling
+// TODO: Include protein interactions
+// TODO: Model molecular pathways
+
+message Molecule {
+    MaterialEntity material_entity = 1;
+    string formula = 2;
+    double molecular_weight = 3;
+    // Add more fields
+}
+
+message BiochemicalReaction {
+    Process reaction_process = 1;
+    repeated Molecule substrates = 2;
+    repeated Molecule products = 3;
+    // Add more fields
+}
+
+// Placeholder for additional molecular biology messages

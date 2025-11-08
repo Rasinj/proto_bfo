@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package protobuf_world.domains.computational;
+
+import "proto/core/bfo_core.proto";
+import "proto/domains/information/documents.proto";
+
+// Software systems and computation
+// TODO: Implement software entities
+// TODO: Add computational processes
+// TODO: Include data structures
+// TODO: Model algorithms and execution
+
+message SoftwareEntity {
+    information.InformationContentEntity code = 1;
+    string version = 2;
+    // Add more fields
+}
+
+message ComputationProcess {
+    Process process = 1;
+    SoftwareEntity software = 2;
+    MaterialEntity hardware = 3;
+    // Add more fields
+}
+
+// Placeholder for additional computational messages

@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package protobuf_world.domains.temporal;
+
+import "proto/core/bfo_core.proto";
+import "proto/common/identifiers.proto";
+import "proto/domains/information/documents.proto";
+
+// Historical events and chronology
+// TODO: Implement historical event modeling
+// TODO: Add chronological sequences
+// TODO: Include historical periods and eras
+// TODO: Model historical causation
+
+message HistoricalEvent {
+    Process event_process = 1;
+    repeated MaterialEntity participants = 2;
+    SpatioTemporalRegion location = 3;
+    string event_type = 4;
+    // Add more fields
+}
+
+message Era {
+    TemporalRegion temporal_region = 1;
+    string era_name = 2;
+    // Add more fields
+}
+
+// Placeholder for additional historical messages

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package protobuf_world.domains.information;
+
+import "proto/core/bfo_core.proto";
+import "proto/common/references.proto";
+
+// Knowledge representation and semantic structures
+// TODO: Implement knowledge graphs
+// TODO: Add semantic relations
+// TODO: Include reasoning capabilities
+// TODO: Model beliefs and assertions
+
+message KnowledgeAssertion {
+    string subject = 1;
+    string predicate = 2;
+    string object = 3;
+    double confidence = 4;
+    // Add more fields
+}
+
+// Placeholder for additional knowledge messages

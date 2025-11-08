@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package protobuf_world.domains.physical;
+
+import "proto/core/bfo_core.proto";
+import "proto/common/units.proto";
+import "proto/common/identifiers.proto";
+import "google/protobuf/timestamp.proto";
+
+// Manufacturing processes and products
+// TODO: Implement production workflows
+// TODO: Add quality control
+// TODO: Include supply chain modeling
+// TODO: Model equipment and facilities
+
+message Product {
+    MaterialEntity artifact = 1;
+    string product_id = 2;
+    google.protobuf.Timestamp manufacture_date = 3;
+    // Add more fields
+}
+
+message ManufacturingProcess {
+    Process process = 1;
+    repeated MaterialEntity inputs = 2;
+    Product output = 3;
+    // Add more fields
+}
+
+// Placeholder for additional manufacturing messages

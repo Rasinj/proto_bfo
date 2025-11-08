@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+message sequence {
+    repeated nucleotide nucleotides = 1;
+}
+
+enum nucleotide {
+    A = 0;
+    T = 1;
+    C = 2;
+    G = 3;
+}
