@@ -15,14 +15,14 @@ import "google/protobuf/timestamp.proto";
 // TODO: Model clinical encounters and care episodes
 
 message Patient {
-    MaterialEntity organism = 1;
+    protobuf_world.MaterialEntity organism = 1;
     string patient_id = 2;
     // Add more fields
 }
 
 message ClinicalMeasurement {
-    Quality measured_quality = 1;
-    common.PhysicalQuantity value = 2;
+    protobuf_world.Quality measured_quality = 1;
+    protobuf_world.common.PhysicalQuantity value = 2;
     google.protobuf.Timestamp measurement_time = 3;
     // Add more fields
 }

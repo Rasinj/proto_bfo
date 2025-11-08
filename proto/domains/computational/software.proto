@@ -12,15 +12,15 @@ import "proto/domains/information/documents.proto";
 // TODO: Model algorithms and execution
 
 message SoftwareEntity {
-    information.InformationContentEntity code = 1;
+    protobuf_world.domains.information.InformationContentEntity code = 1;
     string version = 2;
     // Add more fields
 }
 
 message ComputationProcess {
-    Process process = 1;
+    protobuf_world.Process process = 1;
     SoftwareEntity software = 2;
-    MaterialEntity hardware = 3;
+    protobuf_world.MaterialEntity hardware = 3;
     // Add more fields
 }
 

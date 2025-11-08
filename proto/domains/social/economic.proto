@@ -14,13 +14,13 @@ import "proto/domains/social/transaction.proto";
 // TODO: Model services and value exchange
 
 message EconomicAgent {
-    MaterialEntity entity = 1;
-    repeated Resource assets = 2;
+    protobuf_world.MaterialEntity entity = 1;
+    repeated protobuf_world.Resource assets = 2;
     // Add more fields
 }
 
 message Market {
-    Process market_process = 1;
+    protobuf_world.Process market_process = 1;
     repeated EconomicAgent participants = 2;
     // Add more fields
 }

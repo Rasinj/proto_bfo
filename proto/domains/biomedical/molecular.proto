@@ -14,14 +14,14 @@ import "proto/common/references.proto";
 // TODO: Model molecular pathways
 
 message Molecule {
-    MaterialEntity material_entity = 1;
+    protobuf_world.MaterialEntity material_entity = 1;
     string formula = 2;
     double molecular_weight = 3;
     // Add more fields
 }
 
 message BiochemicalReaction {
-    Process reaction_process = 1;
+    protobuf_world.Process reaction_process = 1;
     repeated Molecule substrates = 2;
     repeated Molecule products = 3;
     // Add more fields

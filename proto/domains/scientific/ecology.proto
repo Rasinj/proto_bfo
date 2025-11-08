@@ -14,14 +14,14 @@ import "proto/common/references.proto";
 // TODO: Model biodiversity and conservation concepts
 
 message Organism {
-    MaterialEntity material_entity = 1;
+    protobuf_world.MaterialEntity material_entity = 1;
     string taxon = 2;
     string ncbi_taxonomy_id = 3;
     // Add more fields
 }
 
 message Ecosystem {
-    ImmaterialEntity spatial_region = 1;
+    protobuf_world.ImmaterialEntity spatial_region = 1;
     repeated Organism organisms = 2;
     // Add more fields
 }

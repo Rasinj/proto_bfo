@@ -14,15 +14,15 @@ import "google/protobuf/timestamp.proto";
 // TODO: Model equipment and facilities
 
 message Product {
-    MaterialEntity artifact = 1;
+    protobuf_world.MaterialEntity artifact = 1;
     string product_id = 2;
     google.protobuf.Timestamp manufacture_date = 3;
     // Add more fields
 }
 
 message ManufacturingProcess {
-    Process process = 1;
-    repeated MaterialEntity inputs = 2;
+    protobuf_world.Process process = 1;
+    repeated protobuf_world.MaterialEntity inputs = 2;
     Product output = 3;
     // Add more fields
 }

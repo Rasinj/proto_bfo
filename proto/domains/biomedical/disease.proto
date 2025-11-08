@@ -14,9 +14,9 @@ import "google/protobuf/timestamp.proto";
 // TODO: Include comorbidity relationships
 
 message Disease {
-    Process disease_process = 1;
-    MaterialEntity affected_organism = 2;
-    repeated Quality pathological_qualities = 3;
+    protobuf_world.Process disease_process = 1;
+    protobuf_world.MaterialEntity affected_organism = 2;
+    repeated protobuf_world.Quality pathological_qualities = 3;
     string mesh_id = 4;
     string icd_code = 5;
     // Add more fields as needed

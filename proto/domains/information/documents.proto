@@ -15,7 +15,7 @@ import "google/protobuf/timestamp.proto";
 
 message InformationContentEntity {
     string description = 1;
-    MaterialEntity bearer = 2;
+    protobuf_world.MaterialEntity bearer = 2;
     bytes data = 3;
     string format = 4;
     // Add more fields

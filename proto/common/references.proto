@@ -11,7 +11,7 @@ message OntologyReference {
     string term_label = 3;                  // Human-readable term name
     string term_definition = 4;             // Term definition
     repeated string synonyms = 5;           // Alternative names
-    URI ontology_uri = 6;                   // Link to ontology resource
+    protobuf_world.common.URI ontology_uri = 6;  // Link to ontology resource
     string version = 7;                     // Ontology version
 }
 
@@ -75,7 +75,7 @@ message ChEBIReference {
     string chebi_id = 1;                    // e.g., "CHEBI:15377"
     string chebi_name = 2;                  // Chemical name
     string definition = 3;
-    ChemicalIdentifier chemical_id = 4;     // InChI, SMILES, etc.
+    protobuf_world.common.ChemicalIdentifier chemical_id = 4;  // InChI, SMILES, etc.
     string formula = 5;                     // Molecular formula
     repeated string is_a = 6;               // Chemical classification
 }

@@ -14,14 +14,14 @@ import "proto/common/references.proto";
 // TODO: Model social relationships
 
 message Person {
-    MaterialEntity organism = 1;
+    protobuf_world.MaterialEntity organism = 1;
     string identifier = 2;
-    repeated Role social_roles = 3;
+    repeated protobuf_world.Role social_roles = 3;
     // Add more fields
 }
 
 message Organization {
-    MaterialEntity material_entity = 1;
+    protobuf_world.MaterialEntity material_entity = 1;
     repeated Person members = 2;
     string legal_identifier = 3;
     // Add more fields

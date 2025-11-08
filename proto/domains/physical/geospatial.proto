@@ -13,7 +13,7 @@ import "proto/common/identifiers.proto";
 // TODO: Model spatial relationships
 
 message GeographicLocation {
-    SpatialRegion spatial_region = 1;
+    protobuf_world.SpatialRegion spatial_region = 1;
     double latitude = 2;
     double longitude = 3;
     double elevation = 4;
@@ -22,7 +22,7 @@ message GeographicLocation {
 }
 
 message GeographicFeature {
-    MaterialEntity feature = 1;
+    protobuf_world.MaterialEntity feature = 1;
     GeographicLocation location = 2;
     // Add more fields
 }
