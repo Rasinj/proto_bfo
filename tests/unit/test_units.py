@@ -27,10 +27,10 @@ class TestQuantityValue:
 
         qty = units_pb2.QuantityValue(
             value=100.0,
-            common=units_pb2.CommonUnit.KILOGRAM
+            common=units_pb2.CommonUnit.GRAM
         )
         assert qty.value == 100.0
-        assert qty.common == units_pb2.CommonUnit.KILOGRAM
+        assert qty.common == units_pb2.CommonUnit.GRAM
 
     def test_create_with_si_derived(self):
         """Test creating quantity with SI derived unit."""
@@ -53,7 +53,7 @@ class TestPhysicalQuantity:
 
         qty_val = units_pb2.QuantityValue(
             value=70.0,
-            common=units_pb2.CommonUnit.KILOGRAM
+            si_base=units_pb2.SIBaseUnit.KILOGRAM
         )
         phys_qty = units_pb2.PhysicalQuantity(
             quantity=qty_val,

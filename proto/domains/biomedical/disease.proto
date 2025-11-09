@@ -6,6 +6,7 @@ import "proto/core/bfo_core.proto";
 import "proto/common/units.proto";
 import "proto/common/identifiers.proto";
 import "proto/common/references.proto";
+import "proto/domains/biomedical/anatomy.proto";
 import "google/protobuf/timestamp.proto";
 
 // ============================================================================
@@ -270,7 +271,7 @@ message CysticFibrosis {
     repeated OrganSystemAffected affected_systems = 3;
 }
 
-message SickleC ellDisease {
+message SickleCellDisease {
     SingleGeneDisorder single_gene = 1;
     string hbb_mutation = 2;  // HBB gene mutation
     SeverityType severity = 3;
@@ -595,20 +596,6 @@ message OrganSystemAffected {
         URINARY = 8;
         REPRODUCTIVE = 9;
         INTEGUMENTARY = 10;
-    }
-}
-
-message RespiratorySystem {
-    RespiratoryRegion region = 1;
-
-    enum RespiratoryRegion {
-        RESPIRATORY_REGION_UNSPECIFIED = 0;
-        UPPER_AIRWAY = 1;
-        TRACHEA = 2;
-        BRONCHI = 3;
-        BRONCHIOLES = 4;
-        ALVEOLI = 5;
-        PLEURA = 6;
     }
 }
 
