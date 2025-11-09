@@ -8,18 +8,615 @@ import "proto/common/identifiers.proto";
 import "proto/common/references.proto";
 import "google/protobuf/timestamp.proto";
 
-// Disease modeling - diseases as pathological processes
-// TODO: Implement full disease ontology integration
-// TODO: Add disease progression tracking
-// TODO: Include comorbidity relationships
+// ============================================================================
+// DISEASE TAXONOMY - Hierarchical disease classification
+// Supports "tree cutting" - select any leaf node and all parents are included
+// ============================================================================
 
+// Base Disease - Root of disease taxonomy
 message Disease {
     protobuf_world.Process disease_process = 1;
     protobuf_world.MaterialEntity affected_organism = 2;
     repeated protobuf_world.Quality pathological_qualities = 3;
-    string mesh_id = 4;
-    string icd_code = 5;
-    // Add more fields as needed
+
+    // Standard identifiers
+    protobuf_world.common.MedicalIdentifier icd_code = 4;
+    protobuf_world.common.MeSHReference mesh_reference = 5;
+    protobuf_world.common.SNOMEDCTReference snomed_reference = 6;
+
+    // Disease classification
+    DiseaseCategory category = 7;
+    DiseaseSeverity severity = 8;
+    DiseaseStage stage = 9;
+
+    // Temporal information
+    protobuf_world.ProcessBoundary onset = 10;
+    protobuf_world.ProcessBoundary resolution = 11;  // null for chronic
+    protobuf_world.common.QuantityValue duration = 12;
+
+    // Relationships
+    repeated Disease comorbidities = 13;
+    Disease parent_disease = 14;  // For subtypes
+    repeated Disease complications = 15;
+
+    // Clinical information
+    repeated ClinicalSign signs = 16;
+    repeated Symptom symptoms = 17;
+    repeated RiskFactor risk_factors = 18;
+
+    enum DiseaseCategory {
+        DISEASE_CATEGORY_UNSPECIFIED = 0;
+        INFECTIOUS = 1;
+        GENETIC = 2;
+        METABOLIC = 3;
+        NEOPLASTIC = 4;
+        AUTOIMMUNE = 5;
+        DEGENERATIVE = 6;
+        TRAUMATIC = 7;
+        ENVIRONMENTAL = 8;
+        NUTRITIONAL = 9;
+        IATROGENIC = 10;
+    }
+
+    enum DiseaseSeverity {
+        SEVERITY_UNSPECIFIED = 0;
+        MILD = 1;
+        MODERATE = 2;
+        SEVERE = 3;
+        CRITICAL = 4;
+    }
+
+    enum DiseaseStage {
+        STAGE_UNSPECIFIED = 0;
+        PRECLINICAL = 1;
+        EARLY = 2;
+        INTERMEDIATE = 3;
+        ADVANCED = 4;
+        TERMINAL = 5;
+    }
 }
 
-// Placeholder for additional biomedical messages
+// ============================================================================
+// INFECTIOUS DISEASE HIERARCHY
+// ============================================================================
+
+message InfectiousDisease {
+    Disease base_disease = 1;
+    InfectiousAgent causative_agent = 2;
+    TransmissionMode transmission = 3;
+    protobuf_world.common.QuantityValue incubation_period = 4;
+    bool contagious = 5;
+
+    enum TransmissionMode {
+        TRANSMISSION_UNSPECIFIED = 0;
+        AIRBORNE = 1;
+        DROPLET = 2;
+        CONTACT = 3;
+        VECTOR_BORNE = 4;
+        FOODBORNE = 5;
+        WATERBORNE = 6;
+        BLOOD_BORNE = 7;
+        VERTICAL = 8;  // Mother to child
+        SEXUAL = 9;
+    }
+}
+
+message InfectiousAgent {
+    protobuf_world.MaterialEntity organism = 1;
+    AgentType type = 2;
+    string taxonomic_classification = 3;
+    protobuf_world.common.BiologicalIdentifier ncbi_taxonomy = 4;
+
+    enum AgentType {
+        AGENT_TYPE_UNSPECIFIED = 0;
+        VIRUS = 1;
+        BACTERIA = 2;
+        FUNGUS = 3;
+        PARASITE = 4;
+        PRION = 5;
+    }
+}
+
+// Viral infections
+message ViralInfection {
+    InfectiousDisease infectious_disease = 1;
+    VirusType virus_type = 2;
+
+    enum VirusType {
+        VIRUS_TYPE_UNSPECIFIED = 0;
+        DNA_VIRUS = 1;
+        RNA_VIRUS = 2;
+        RETROVIRUS = 3;
+    }
+}
+
+message RespiratoryViralInfection {
+    ViralInfection viral_infection = 1;
+    RespiratorySystem affected_region = 2;
+}
+
+message Influenza {
+    RespiratoryViralInfection respiratory_viral = 1;
+    InfluenzaType type = 2;
+    string strain = 3;
+
+    enum InfluenzaType {
+        INFLUENZA_TYPE_UNSPECIFIED = 0;
+        TYPE_A = 1;
+        TYPE_B = 2;
+        TYPE_C = 3;
+    }
+}
+
+message COVID19 {
+    RespiratoryViralInfection respiratory_viral = 1;
+    string variant = 2;  // Alpha, Beta, Delta, Omicron, etc.
+    bool long_covid = 3;
+}
+
+// Bacterial infections
+message BacterialInfection {
+    InfectiousDisease infectious_disease = 1;
+    BacteriaType bacteria_type = 2;
+    AntibioticResistance resistance = 3;
+
+    enum BacteriaType {
+        BACTERIA_TYPE_UNSPECIFIED = 0;
+        GRAM_POSITIVE = 1;
+        GRAM_NEGATIVE = 2;
+        ACID_FAST = 3;
+        SPIROCHETE = 4;
+        MYCOPLASMA = 5;
+    }
+}
+
+message AntibioticResistance {
+    repeated string resistant_antibiotics = 1;
+    ResistanceMechanism mechanism = 2;
+
+    enum ResistanceMechanism {
+        MECHANISM_UNSPECIFIED = 0;
+        ENZYMATIC_DEGRADATION = 1;
+        TARGET_MODIFICATION = 2;
+        REDUCED_PERMEABILITY = 3;
+        EFFLUX_PUMP = 4;
+    }
+}
+
+message Tuberculosis {
+    BacterialInfection bacterial_infection = 1;
+    TBType type = 2;
+    bool drug_resistant = 3;
+
+    enum TBType {
+        TB_TYPE_UNSPECIFIED = 0;
+        LATENT = 1;
+        ACTIVE_PULMONARY = 2;
+        EXTRAPULMONARY = 3;
+        MILIARY = 4;
+    }
+}
+
+// ============================================================================
+// GENETIC DISEASE HIERARCHY
+// ============================================================================
+
+message GeneticDisease {
+    Disease base_disease = 1;
+    InheritancePattern inheritance = 2;
+    repeated GeneticMutation mutations = 3;
+    repeated ChromosomalAbnormality chromosomal_abnormalities = 4;
+
+    enum InheritancePattern {
+        INHERITANCE_UNSPECIFIED = 0;
+        AUTOSOMAL_DOMINANT = 1;
+        AUTOSOMAL_RECESSIVE = 2;
+        X_LINKED_DOMINANT = 3;
+        X_LINKED_RECESSIVE = 4;
+        Y_LINKED = 5;
+        MITOCHONDRIAL = 6;
+        MULTIFACTORIAL = 7;
+        SOMATIC = 8;
+    }
+}
+
+message GeneticMutation {
+    string gene_symbol = 1;
+    protobuf_world.common.BiologicalIdentifier gene_id = 2;
+    MutationType type = 3;
+    string genomic_location = 4;
+    string nucleotide_change = 5;
+    string protein_change = 6;
+
+    enum MutationType {
+        MUTATION_TYPE_UNSPECIFIED = 0;
+        POINT_MUTATION = 1;
+        INSERTION = 2;
+        DELETION = 3;
+        DUPLICATION = 4;
+        INVERSION = 5;
+        TRANSLOCATION = 6;
+        FRAMESHIFT = 7;
+        NONSENSE = 8;
+        MISSENSE = 9;
+        SILENT = 10;
+    }
+}
+
+message ChromosomalAbnormality {
+    string chromosome = 1;
+    AbnormalityType type = 2;
+    string karyotype = 3;
+
+    enum AbnormalityType {
+        ABNORMALITY_TYPE_UNSPECIFIED = 0;
+        ANEUPLOIDY = 1;
+        DELETION = 2;
+        DUPLICATION = 3;
+        INVERSION = 4;
+        TRANSLOCATION = 5;
+        RING_CHROMOSOME = 6;
+    }
+}
+
+message SingleGeneDisorder {
+    GeneticDisease genetic_disease = 1;
+    GeneticMutation primary_mutation = 2;
+}
+
+message CysticFibrosis {
+    SingleGeneDisorder single_gene = 1;
+    string cftr_mutation = 2;  // CFTR gene mutation
+    repeated OrganSystemAffected affected_systems = 3;
+}
+
+message SickleC ellDisease {
+    SingleGeneDisorder single_gene = 1;
+    string hbb_mutation = 2;  // HBB gene mutation
+    SeverityType severity = 3;
+
+    enum SeverityType {
+        SEVERITY_UNSPECIFIED = 0;
+        TRAIT = 1;  // Carrier
+        DISEASE_SS = 2;  // Homozygous
+        DISEASE_SC = 3;  // Compound heterozygous
+    }
+}
+
+// ============================================================================
+// METABOLIC DISEASE HIERARCHY
+// ============================================================================
+
+message MetabolicDisease {
+    Disease base_disease = 1;
+    MetabolicPathway affected_pathway = 2;
+    repeated BiochemicalMarker biomarkers = 3;
+
+    enum MetabolicPathway {
+        PATHWAY_UNSPECIFIED = 0;
+        CARBOHYDRATE_METABOLISM = 1;
+        LIPID_METABOLISM = 2;
+        PROTEIN_METABOLISM = 3;
+        NUCLEOTIDE_METABOLISM = 4;
+        AMINO_ACID_METABOLISM = 5;
+        ENERGY_METABOLISM = 6;
+        VITAMIN_METABOLISM = 7;
+        MINERAL_METABOLISM = 8;
+    }
+}
+
+message BiochemicalMarker {
+    string marker_name = 1;
+    protobuf_world.common.PhysicalQuantity normal_range = 2;
+    protobuf_world.common.PhysicalQuantity measured_value = 3;
+    bool abnormal = 4;
+}
+
+message DiabetesMellitus {
+    MetabolicDisease metabolic_disease = 1;
+    DiabetesType type = 2;
+    protobuf_world.common.PhysicalQuantity hba1c = 3;
+    protobuf_world.common.PhysicalQuantity fasting_glucose = 4;
+
+    enum DiabetesType {
+        DIABETES_TYPE_UNSPECIFIED = 0;
+        TYPE_1 = 1;
+        TYPE_2 = 2;
+        GESTATIONAL = 3;
+        MODY = 4;  // Maturity Onset Diabetes of the Young
+        SECONDARY = 5;
+    }
+}
+
+message DiabeticComplications {
+    DiabetesMellitus diabetes = 1;
+    repeated Complication complications = 2;
+
+    message Complication {
+        ComplicationType type = 1;
+        DiseaseSeverity severity = 2;
+
+        enum ComplicationType {
+            COMPLICATION_UNSPECIFIED = 0;
+            RETINOPATHY = 1;
+            NEPHROPATHY = 2;
+            NEUROPATHY = 3;
+            CARDIOVASCULAR = 4;
+            DIABETIC_FOOT = 5;
+        }
+    }
+}
+
+// ============================================================================
+// NEOPLASTIC DISEASE HIERARCHY (Cancer)
+// ============================================================================
+
+message NeoplasticDisease {
+    Disease base_disease = 1;
+    NeoplasticType type = 2;
+    bool malignant = 3;
+    TumorGrade grade = 4;
+    TumorStage stage = 5;
+    repeated GeneticMutation driver_mutations = 6;
+
+    enum NeoplasticType {
+        NEOPLASTIC_TYPE_UNSPECIFIED = 0;
+        CARCINOMA = 1;
+        SARCOMA = 2;
+        LEUKEMIA = 3;
+        LYMPHOMA = 4;
+        MYELOMA = 5;
+        GLIOMA = 6;
+        MELANOMA = 7;
+        BLASTOMA = 8;
+    }
+
+    enum TumorGrade {
+        GRADE_UNSPECIFIED = 0;
+        GRADE_1_WELL_DIFFERENTIATED = 1;
+        GRADE_2_MODERATELY_DIFFERENTIATED = 2;
+        GRADE_3_POORLY_DIFFERENTIATED = 3;
+        GRADE_4_UNDIFFERENTIATED = 4;
+    }
+
+    enum TumorStage {
+        STAGE_UNSPECIFIED = 0;
+        STAGE_0_IN_SITU = 1;
+        STAGE_I = 2;
+        STAGE_II = 3;
+        STAGE_III = 4;
+        STAGE_IV_METASTATIC = 5;
+    }
+}
+
+message Carcinoma {
+    NeoplasticDisease neoplastic = 1;
+    TissueOfOrigin origin = 2;
+
+    enum TissueOfOrigin {
+        TISSUE_UNSPECIFIED = 0;
+        EPITHELIAL = 1;
+        GLANDULAR = 2;
+        SQUAMOUS = 3;
+        TRANSITIONAL = 4;
+    }
+}
+
+message LungCancer {
+    Carcinoma carcinoma = 1;
+    LungCancerType type = 2;
+    bool small_cell = 3;
+
+    enum LungCancerType {
+        LUNG_CANCER_TYPE_UNSPECIFIED = 0;
+        ADENOCARCINOMA = 1;
+        SQUAMOUS_CELL_CARCINOMA = 2;
+        LARGE_CELL_CARCINOMA = 3;
+        SMALL_CELL = 4;
+    }
+}
+
+// ============================================================================
+// CARDIOVASCULAR DISEASE HIERARCHY
+// ============================================================================
+
+message CardiovascularDisease {
+    Disease base_disease = 1;
+    CardiovascularSystem affected_system = 2;
+
+    enum CardiovascularSystem {
+        CV_SYSTEM_UNSPECIFIED = 0;
+        HEART = 1;
+        ARTERIES = 2;
+        VEINS = 3;
+        CAPILLARIES = 4;
+        LYMPHATIC = 5;
+    }
+}
+
+message CoronaryArteryDisease {
+    CardiovascularDisease cv_disease = 1;
+    repeated CoronaryArtery affected_arteries = 2;
+    protobuf_world.common.QuantityValue stenosis_percentage = 3;
+
+    enum CoronaryArtery {
+        ARTERY_UNSPECIFIED = 0;
+        LEFT_MAIN = 1;
+        LEFT_ANTERIOR_DESCENDING = 2;
+        LEFT_CIRCUMFLEX = 3;
+        RIGHT_CORONARY = 4;
+    }
+}
+
+message MyocardialInfarction {
+    CoronaryArteryDisease cad = 1;
+    MIType type = 2;
+    repeated CardiacBiomarker biomarkers = 3;
+
+    enum MIType {
+        MI_TYPE_UNSPECIFIED = 0;
+        STEMI = 1;  // ST-Elevation MI
+        NSTEMI = 2;  // Non-ST-Elevation MI
+    }
+}
+
+message CardiacBiomarker {
+    string marker_name = 1;  // Troponin, CK-MB, etc.
+    protobuf_world.common.PhysicalQuantity value = 2;
+    google.protobuf.Timestamp measurement_time = 3;
+}
+
+// ============================================================================
+// NEUROLOGICAL DISEASE HIERARCHY
+// ============================================================================
+
+message NeurologicalDisease {
+    Disease base_disease = 1;
+    NervousSystem affected_system = 2;
+
+    enum NervousSystem {
+        NERVOUS_SYSTEM_UNSPECIFIED = 0;
+        CENTRAL = 1;
+        PERIPHERAL = 2;
+        AUTONOMIC = 3;
+    }
+}
+
+message NeurodegenerativeDisease {
+    NeurologicalDisease neuro_disease = 1;
+    ProteinAggregate pathological_protein = 2;
+
+    message ProteinAggregate {
+        string protein_name = 1;
+        AggregateType type = 2;
+
+        enum AggregateType {
+            AGGREGATE_UNSPECIFIED = 0;
+            AMYLOID_PLAQUE = 1;
+            NEUROFIBRILLARY_TANGLE = 2;
+            LEWY_BODY = 3;
+        }
+    }
+}
+
+message AlzheimersDisease {
+    NeurodegenerativeDisease neurodegen = 1;
+    AlzheimersStage stage = 2;
+    repeated CognitiveAssessment assessments = 3;
+
+    enum AlzheimersStage {
+        ALZHEIMERS_STAGE_UNSPECIFIED = 0;
+        PRECLINICAL = 1;
+        MILD_COGNITIVE_IMPAIRMENT = 2;
+        MILD_DEMENTIA = 3;
+        MODERATE_DEMENTIA = 4;
+        SEVERE_DEMENTIA = 5;
+    }
+}
+
+message CognitiveAssessment {
+    string assessment_name = 1;  // MMSE, MoCA, etc.
+    int32 score = 2;
+    int32 max_score = 3;
+    google.protobuf.Timestamp assessment_date = 4;
+}
+
+message ParkinsonsDisease {
+    NeurodegenerativeDisease neurodegen = 1;
+    repeated MotorSymptom motor_symptoms = 2;
+    repeated NonMotorSymptom non_motor_symptoms = 3;
+
+    message MotorSymptom {
+        SymptomType type = 1;
+        DiseaseSeverity severity = 2;
+
+        enum SymptomType {
+            SYMPTOM_UNSPECIFIED = 0;
+            TREMOR = 1;
+            RIGIDITY = 2;
+            BRADYKINESIA = 3;
+            POSTURAL_INSTABILITY = 4;
+        }
+    }
+
+    message NonMotorSymptom {
+        string description = 1;
+        DiseaseSeverity severity = 2;
+    }
+}
+
+// ============================================================================
+// SHARED CLINICAL COMPONENTS
+// ============================================================================
+
+message ClinicalSign {
+    string sign_name = 1;
+    string description = 2;
+    bool present = 3;
+    DiseaseSeverity severity = 4;
+    google.protobuf.Timestamp observed_date = 5;
+}
+
+message Symptom {
+    string symptom_name = 1;
+    string description = 2;
+    DiseaseSeverity severity = 3;
+    google.protobuf.Timestamp onset = 4;
+    protobuf_world.common.QuantityValue duration = 5;
+}
+
+message RiskFactor {
+    string factor_name = 1;
+    RiskLevel level = 2;
+    bool modifiable = 3;
+
+    enum RiskLevel {
+        RISK_LEVEL_UNSPECIFIED = 0;
+        LOW = 1;
+        MODERATE = 2;
+        HIGH = 3;
+        VERY_HIGH = 4;
+    }
+}
+
+message OrganSystemAffected {
+    OrganSystem system = 1;
+    DiseaseSeverity severity = 2;
+
+    enum OrganSystem {
+        ORGAN_SYSTEM_UNSPECIFIED = 0;
+        RESPIRATORY = 1;
+        CARDIOVASCULAR = 2;
+        DIGESTIVE = 3;
+        NERVOUS = 4;
+        ENDOCRINE = 5;
+        IMMUNE = 6;
+        MUSCULOSKELETAL = 7;
+        URINARY = 8;
+        REPRODUCTIVE = 9;
+        INTEGUMENTARY = 10;
+    }
+}
+
+message RespiratorySystem {
+    RespiratoryRegion region = 1;
+
+    enum RespiratoryRegion {
+        RESPIRATORY_REGION_UNSPECIFIED = 0;
+        UPPER_AIRWAY = 1;
+        TRACHEA = 2;
+        BRONCHI = 3;
+        BRONCHIOLES = 4;
+        ALVEOLI = 5;
+        PLEURA = 6;
+    }
+}
+
+// Disease severity is defined in Disease message enum
+enum DiseaseSeverity {
+    SEVERITY_UNSPECIFIED = 0;
+    MILD = 1;
+    MODERATE = 2;
+    SEVERE = 3;
+    CRITICAL = 4;
+}
