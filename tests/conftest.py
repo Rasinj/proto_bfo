@@ -81,7 +81,7 @@ def sample_quantity_value():
         from proto.common import units_pb2
         return units_pb2.QuantityValue(
             value=100.0,
-            common=units_pb2.CommonUnit.KILOGRAM,
+            si_base=units_pb2.SIBaseUnit.KILOGRAM,
             uncertainty=0.1
         )
     except ImportError:

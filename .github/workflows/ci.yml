@@ -79,11 +79,11 @@ jobs:
 
       - name: Run unit tests
         run: |
-          pytest tests/unit -v --cov=proto --cov-report=xml --cov-report=term
+          python -m pytest tests/unit -v --cov=proto --cov-report=xml --cov-report=term
 
       - name: Run integration tests
         run: |
-          pytest tests/integration -v || echo "No integration tests yet"
+          python -m pytest tests/integration -v || echo "No integration tests yet"
 
       - name: Upload coverage to Codecov
         if: matrix.python-version == '3.9'
