@@ -1,0 +1,759 @@
+syntax = "proto3";
+
+package protobuf_world.domains.biomedical;
+
+import "proto/core/bfo_core.proto";
+import "proto/common/identifiers.proto";
+import "proto/common/references.proto";
+
+// ============================================================================
+// ANATOMICAL STRUCTURE HIERARCHY
+// Hierarchical taxonomy of anatomical entities
+// Supports "tree cutting" for selecting specific anatomical subsystems
+// ============================================================================
+
+// Base Anatomical Structure
+message AnatomicalStructure {
+    protobuf_world.MaterialEntity material_entity = 1;
+
+    // Identifiers
+    protobuf_world.common.UberonReference uberon_ref = 2;
+    string fma_id = 3;  // Foundational Model of Anatomy
+
+    // Classification
+    StructureLevel level = 4;
+    AnatomicalStructure parent_structure = 5;
+    repeated AnatomicalStructure sub_structures = 6;
+
+    // Spatial information
+    repeated SpatialRelation spatial_relations = 7;
+
+    enum StructureLevel {
+        LEVEL_UNSPECIFIED = 0;
+        ORGANISM = 1;
+        ORGAN_SYSTEM = 2;
+        ORGAN = 3;
+        TISSUE = 4;
+        CELL = 5;
+        SUBCELLULAR = 6;
+        MOLECULAR = 7;
+    }
+}
+
+message SpatialRelation {
+    AnatomicalStructure related_structure = 1;
+    RelationType relation = 2;
+
+    enum RelationType {
+        RELATION_UNSPECIFIED = 0;
+        PART_OF = 1;
+        ADJACENT_TO = 2;
+        CONTAINS = 3;
+        SUPERIOR_TO = 4;
+        INFERIOR_TO = 5;
+        ANTERIOR_TO = 6;
+        POSTERIOR_TO = 7;
+        MEDIAL_TO = 8;
+        LATERAL_TO = 9;
+        PROXIMAL_TO = 10;
+        DISTAL_TO = 11;
+    }
+}
+
+// ============================================================================
+// ORGAN SYSTEM HIERARCHY
+// ============================================================================
+
+message OrganSystem {
+    AnatomicalStructure base_structure = 1;
+    SystemType type = 2;
+    repeated Organ organs = 3;
+    SystemFunction primary_function = 4;
+
+    enum SystemType {
+        SYSTEM_TYPE_UNSPECIFIED = 0;
+        CIRCULATORY = 1;
+        RESPIRATORY = 2;
+        DIGESTIVE = 3;
+        NERVOUS = 4;
+        ENDOCRINE = 5;
+        IMMUNE = 6;
+        MUSCULOSKELETAL = 7;
+        URINARY = 8;
+        REPRODUCTIVE = 9;
+        INTEGUMENTARY = 10;
+        LYMPHATIC = 11;
+    }
+
+    message SystemFunction {
+        string description = 1;
+        repeated string key_processes = 2;
+    }
+}
+
+// ============================================================================
+// CIRCULATORY SYSTEM
+// ============================================================================
+
+message CirculatorySystem {
+    OrganSystem organ_system = 1;
+    Heart heart = 2;
+    repeated BloodVessel vessels = 3;
+}
+
+message Heart {
+    Organ organ = 1;
+    repeated HeartChamber chambers = 2;
+    repeated HeartValve valves = 3;
+    repeated CoronaryArtery coronary_arteries = 4;
+    ConductionSystem conduction_system = 5;
+}
+
+message HeartChamber {
+    AnatomicalStructure structure = 1;
+    ChamberType type = 2;
+
+    enum ChamberType {
+        CHAMBER_TYPE_UNSPECIFIED = 0;
+        RIGHT_ATRIUM = 1;
+        LEFT_ATRIUM = 2;
+        RIGHT_VENTRICLE = 3;
+        LEFT_VENTRICLE = 4;
+    }
+}
+
+message HeartValve {
+    AnatomicalStructure structure = 1;
+    ValveType type = 2;
+
+    enum ValveType {
+        VALVE_TYPE_UNSPECIFIED = 0;
+        TRICUSPID = 1;
+        PULMONARY = 2;
+        MITRAL = 3;
+        AORTIC = 4;
+    }
+}
+
+message CoronaryArtery {
+    BloodVessel vessel = 1;
+    CoronaryType type = 2;
+
+    enum CoronaryType {
+        CORONARY_TYPE_UNSPECIFIED = 0;
+        LEFT_MAIN = 1;
+        LEFT_ANTERIOR_DESCENDING = 2;
+        LEFT_CIRCUMFLEX = 3;
+        RIGHT_CORONARY = 4;
+    }
+}
+
+message ConductionSystem {
+    repeated ConductionNode nodes = 1;
+
+    message ConductionNode {
+        string node_name = 1;  // SA node, AV node, etc.
+        AnatomicalStructure structure = 2;
+    }
+}
+
+message BloodVessel {
+    AnatomicalStructure structure = 1;
+    VesselType type = 2;
+    VesselSize size = 3;
+
+    enum VesselType {
+        VESSEL_TYPE_UNSPECIFIED = 0;
+        ARTERY = 1;
+        VEIN = 2;
+        CAPILLARY = 3;
+        ARTERIOLE = 4;
+        VENULE = 5;
+    }
+
+    enum VesselSize {
+        SIZE_UNSPECIFIED = 0;
+        LARGE = 1;
+        MEDIUM = 2;
+        SMALL = 3;
+        MICRO = 4;
+    }
+}
+
+// ============================================================================
+// NERVOUS SYSTEM
+// ============================================================================
+
+message NervousSystem {
+    OrganSystem organ_system = 1;
+    CentralNervousSystem central = 2;
+    PeripheralNervousSystem peripheral = 3;
+    AutonomicNervousSystem autonomic = 4;
+}
+
+message CentralNervousSystem {
+    Brain brain = 1;
+    SpinalCord spinal_cord = 2;
+}
+
+message Brain {
+    Organ organ = 1;
+    repeated BrainRegion regions = 2;
+}
+
+message BrainRegion {
+    AnatomicalStructure structure = 1;
+    RegionType type = 2;
+    repeated BrainRegion sub_regions = 3;
+
+    enum RegionType {
+        REGION_TYPE_UNSPECIFIED = 0;
+        CEREBRUM = 1;
+        CEREBELLUM = 2;
+        BRAINSTEM = 3;
+        DIENCEPHALON = 4;
+        LIMBIC_SYSTEM = 5;
+        BASAL_GANGLIA = 6;
+    }
+}
+
+message CerebralHemisphere {
+    BrainRegion region = 1;
+    Hemisphere side = 2;
+    repeated CerebralLobe lobes = 3;
+
+    enum Hemisphere {
+        HEMISPHERE_UNSPECIFIED = 0;
+        LEFT = 1;
+        RIGHT = 2;
+    }
+}
+
+message CerebralLobe {
+    BrainRegion region = 1;
+    LobeType type = 2;
+    repeated FunctionalArea functional_areas = 3;
+
+    enum LobeType {
+        LOBE_TYPE_UNSPECIFIED = 0;
+        FRONTAL = 1;
+        PARIETAL = 2;
+        TEMPORAL = 3;
+        OCCIPITAL = 4;
+        INSULAR = 5;
+    }
+}
+
+message FunctionalArea {
+    BrainRegion region = 1;
+    string function = 2;
+    repeated string associated_functions = 3;
+}
+
+message SpinalCord {
+    AnatomicalStructure structure = 1;
+    repeated SpinalSegment segments = 2;
+}
+
+message SpinalSegment {
+    AnatomicalStructure structure = 1;
+    SegmentLevel level = 2;
+    int32 number = 3;
+
+    enum SegmentLevel {
+        LEVEL_UNSPECIFIED = 0;
+        CERVICAL = 1;
+        THORACIC = 2;
+        LUMBAR = 3;
+        SACRAL = 4;
+        COCCYGEAL = 5;
+    }
+}
+
+message PeripheralNervousSystem {
+    repeated Nerve nerves = 1;
+    repeated NerveGanglion ganglia = 2;
+}
+
+message Nerve {
+    AnatomicalStructure structure = 1;
+    NerveType type = 2;
+    repeated NerveBranch branches = 3;
+
+    enum NerveType {
+        NERVE_TYPE_UNSPECIFIED = 0;
+        CRANIAL = 1;
+        SPINAL = 2;
+        PERIPHERAL = 3;
+    }
+}
+
+message NerveBranch {
+    string branch_name = 1;
+    AnatomicalStructure structure = 2;
+    repeated string innervated_structures = 3;
+}
+
+message NerveGanglion {
+    AnatomicalStructure structure = 1;
+    GanglionType type = 2;
+
+    enum GanglionType {
+        GANGLION_TYPE_UNSPECIFIED = 0;
+        DORSAL_ROOT = 1;
+        AUTONOMIC = 2;
+        CRANIAL_NERVE = 3;
+    }
+}
+
+message AutonomicNervousSystem {
+    SympatheticDivision sympathetic = 1;
+    ParasympatheticDivision parasympathetic = 2;
+    EntericDivision enteric = 3;
+}
+
+message SympatheticDivision {
+    repeated NerveGanglion sympathetic_ganglia = 1;
+    repeated string target_organs = 2;
+}
+
+message ParasympatheticDivision {
+    repeated NerveGanglion parasympathetic_ganglia = 1;
+    repeated string target_organs = 2;
+}
+
+message EntericDivision {
+    repeated NervePlexus plexuses = 1;
+
+    message NervePlexus {
+        string plexus_name = 1;
+        AnatomicalStructure structure = 2;
+    }
+}
+
+// ============================================================================
+// RESPIRATORY SYSTEM
+// ============================================================================
+
+message RespiratorySystem {
+    OrganSystem organ_system = 1;
+    repeated Lung lungs = 2;
+    repeated AirwayStructure airways = 3;
+}
+
+message Lung {
+    Organ organ = 1;
+    LungSide side = 2;
+    repeated LungLobe lobes = 3;
+    BronchialTree bronchial_tree = 4;
+
+    enum LungSide {
+        LUNG_SIDE_UNSPECIFIED = 0;
+        LEFT = 1;
+        RIGHT = 2;
+    }
+}
+
+message LungLobe {
+    AnatomicalStructure structure = 1;
+    LobeLocation location = 2;
+    repeated BronchopulmonarySegment segments = 3;
+
+    enum LobeLocation {
+        LOCATION_UNSPECIFIED = 0;
+        RIGHT_UPPER = 1;
+        RIGHT_MIDDLE = 2;
+        RIGHT_LOWER = 3;
+        LEFT_UPPER = 4;
+        LEFT_LOWER = 5;
+    }
+}
+
+message BronchopulmonarySegment {
+    AnatomicalStructure structure = 1;
+    int32 segment_number = 2;
+    string segment_name = 3;
+}
+
+message BronchialTree {
+    repeated AirwayStructure airways = 1;
+}
+
+message AirwayStructure {
+    AnatomicalStructure structure = 1;
+    AirwayType type = 2;
+    int32 generation = 3;  // Airway generation number
+
+    enum AirwayType {
+        AIRWAY_TYPE_UNSPECIFIED = 0;
+        TRACHEA = 1;
+        MAIN_BRONCHUS = 2;
+        LOBAR_BRONCHUS = 3;
+        SEGMENTAL_BRONCHUS = 4;
+        BRONCHIOLE = 5;
+        TERMINAL_BRONCHIOLE = 6;
+        RESPIRATORY_BRONCHIOLE = 7;
+        ALVEOLAR_DUCT = 8;
+        ALVEOLAR_SAC = 9;
+        ALVEOLUS = 10;
+    }
+}
+
+// ============================================================================
+// DIGESTIVE SYSTEM
+// ============================================================================
+
+message DigestiveSystem {
+    OrganSystem organ_system = 1;
+    GastrointestinalTract gi_tract = 2;
+    repeated AccessoryOrgan accessory_organs = 3;
+}
+
+message GastrointestinalTract {
+    repeated GISegment segments = 1;
+}
+
+message GISegment {
+    AnatomicalStructure structure = 1;
+    SegmentType type = 2;
+    repeated TissueLayer layers = 3;
+
+    enum SegmentType {
+        GI_SEGMENT_UNSPECIFIED = 0;
+        ORAL_CAVITY = 1;
+        PHARYNX = 2;
+        ESOPHAGUS = 3;
+        STOMACH = 4;
+        SMALL_INTESTINE = 5;
+        LARGE_INTESTINE = 6;
+        RECTUM = 7;
+        ANUS = 8;
+    }
+}
+
+message SmallIntestine {
+    GISegment segment = 1;
+    repeated SmallIntestineSegment subsegments = 2;
+}
+
+message SmallIntestineSegment {
+    AnatomicalStructure structure = 1;
+    SubsegmentType type = 2;
+
+    enum SubsegmentType {
+        SUBSEGMENT_UNSPECIFIED = 0;
+        DUODENUM = 1;
+        JEJUNUM = 2;
+        ILEUM = 3;
+    }
+}
+
+message LargeIntestine {
+    GISegment segment = 1;
+    repeated LargeIntestineSegment subsegments = 2;
+}
+
+message LargeIntestineSegment {
+    AnatomicalStructure structure = 1;
+    SubsegmentType type = 2;
+
+    enum SubsegmentType {
+        SUBSEGMENT_UNSPECIFIED = 0;
+        CECUM = 1;
+        ASCENDING_COLON = 2;
+        TRANSVERSE_COLON = 3;
+        DESCENDING_COLON = 4;
+        SIGMOID_COLON = 5;
+    }
+}
+
+message AccessoryOrgan {
+    Organ organ = 1;
+    OrganType type = 2;
+
+    enum OrganType {
+        ACCESSORY_ORGAN_UNSPECIFIED = 0;
+        LIVER = 1;
+        GALLBLADDER = 2;
+        PANCREAS = 3;
+        SALIVARY_GLANDS = 4;
+    }
+}
+
+message Liver {
+    AccessoryOrgan organ = 1;
+    repeated LiverLobe lobes = 2;
+    repeated LiverSegment segments = 3;
+}
+
+message LiverLobe {
+    AnatomicalStructure structure = 1;
+    LobeType type = 2;
+
+    enum LobeType {
+        LOBE_UNSPECIFIED = 0;
+        RIGHT = 1;
+        LEFT = 2;
+        CAUDATE = 3;
+        QUADRATE = 4;
+    }
+}
+
+message LiverSegment {
+    AnatomicalStructure structure = 1;
+    int32 couinaud_number = 2;  // Couinaud classification (1-8)
+}
+
+// ============================================================================
+// MUSCULOSKELETAL SYSTEM
+// ============================================================================
+
+message MusculoskeletalSystem {
+    OrganSystem organ_system = 1;
+    SkeletalSystem skeletal = 2;
+    MuscularSystem muscular = 3;
+}
+
+message SkeletalSystem {
+    repeated Bone bones = 1;
+    repeated Joint joints = 2;
+    repeated Cartilage cartilages = 3;
+}
+
+message Bone {
+    AnatomicalStructure structure = 1;
+    BoneType type = 2;
+    SkeletalRegion region = 3;
+
+    enum BoneType {
+        BONE_TYPE_UNSPECIFIED = 0;
+        LONG = 1;
+        SHORT = 2;
+        FLAT = 3;
+        IRREGULAR = 4;
+        SESAMOID = 5;
+    }
+
+    enum SkeletalRegion {
+        SKELETAL_REGION_UNSPECIFIED = 0;
+        AXIAL = 1;
+        APPENDICULAR = 2;
+    }
+}
+
+message Skull {
+    repeated CranialBone cranial_bones = 1;
+    repeated FacialBone facial_bones = 2;
+}
+
+message CranialBone {
+    Bone bone = 1;
+    BoneName name = 2;
+
+    enum BoneName {
+        BONE_NAME_UNSPECIFIED = 0;
+        FRONTAL = 1;
+        PARIETAL = 2;
+        TEMPORAL = 3;
+        OCCIPITAL = 4;
+        SPHENOID = 5;
+        ETHMOID = 6;
+    }
+}
+
+message FacialBone {
+    Bone bone = 1;
+    BoneName name = 2;
+
+    enum BoneName {
+        BONE_NAME_UNSPECIFIED = 0;
+        MAXILLA = 1;
+        ZYGOMATIC = 2;
+        MANDIBLE = 3;
+        NASAL = 4;
+        LACRIMAL = 5;
+        PALATINE = 6;
+        VOMER = 7;
+    }
+}
+
+message VertebralColumn {
+    repeated Vertebra vertebrae = 1;
+    repeated IntervertebralDisc discs = 2;
+}
+
+message Vertebra {
+    Bone bone = 1;
+    VertebralLevel level = 2;
+    int32 number = 3;
+
+    enum VertebralLevel {
+        VERTEBRAL_LEVEL_UNSPECIFIED = 0;
+        CERVICAL = 1;
+        THORACIC = 2;
+        LUMBAR = 3;
+        SACRAL = 4;
+        COCCYGEAL = 5;
+    }
+}
+
+message IntervertebralDisc {
+    AnatomicalStructure structure = 1;
+    string level = 2;  // e.g., "L4-L5"
+}
+
+message Joint {
+    AnatomicalStructure structure = 1;
+    JointType type = 2;
+    repeated Bone articulating_bones = 3;
+
+    enum JointType {
+        JOINT_TYPE_UNSPECIFIED = 0;
+        FIBROUS = 1;
+        CARTILAGINOUS = 2;
+        SYNOVIAL = 3;
+    }
+}
+
+message SynovialJoint {
+    Joint joint = 1;
+    JointCategory category = 2;
+    repeated Ligament ligaments = 3;
+
+    enum JointCategory {
+        CATEGORY_UNSPECIFIED = 0;
+        HINGE = 1;
+        PIVOT = 2;
+        BALL_AND_SOCKET = 3;
+        CONDYLOID = 4;
+        SADDLE = 5;
+        GLIDING = 6;
+    }
+}
+
+message Ligament {
+    AnatomicalStructure structure = 1;
+    string ligament_name = 2;
+}
+
+message Cartilage {
+    AnatomicalStructure structure = 1;
+    CartilageType type = 2;
+
+    enum CartilageType {
+        CARTILAGE_TYPE_UNSPECIFIED = 0;
+        HYALINE = 1;
+        ELASTIC = 2;
+        FIBROCARTILAGE = 3;
+    }
+}
+
+message MuscularSystem {
+    repeated Muscle muscles = 1;
+}
+
+message Muscle {
+    AnatomicalStructure structure = 1;
+    MuscleType type = 2;
+    repeated Attachment attachments = 3;
+    string primary_action = 4;
+
+    enum MuscleType {
+        MUSCLE_TYPE_UNSPECIFIED = 0;
+        SKELETAL = 1;
+        CARDIAC = 2;
+        SMOOTH = 3;
+    }
+}
+
+message Attachment {
+    AttachmentType type = 1;
+    Bone bone = 2;
+    string attachment_site = 3;
+
+    enum AttachmentType {
+        ATTACHMENT_UNSPECIFIED = 0;
+        ORIGIN = 1;
+        INSERTION = 2;
+    }
+}
+
+// ============================================================================
+// CELLULAR AND TISSUE LEVEL
+// ============================================================================
+
+message Tissue {
+    AnatomicalStructure structure = 1;
+    TissueType type = 2;
+    repeated Cell cells = 3;
+
+    enum TissueType {
+        TISSUE_TYPE_UNSPECIFIED = 0;
+        EPITHELIAL = 1;
+        CONNECTIVE = 2;
+        MUSCLE = 3;
+        NERVOUS = 4;
+    }
+}
+
+message TissueLayer {
+    Tissue tissue = 1;
+    LayerName name = 2;
+    int32 layer_order = 3;
+
+    enum LayerName {
+        LAYER_NAME_UNSPECIFIED = 0;
+        MUCOSA = 1;
+        SUBMUCOSA = 2;
+        MUSCULARIS = 3;
+        SEROSA = 4;
+        ADVENTITIA = 5;
+    }
+}
+
+message Cell {
+    protobuf_world.MaterialEntity material_entity = 1;
+    CellType type = 2;
+    protobuf_world.common.CellOntologyReference cl_reference = 3;
+    repeated CellularComponent components = 4;
+
+    enum CellType {
+        CELL_TYPE_UNSPECIFIED = 0;
+        NEURON = 1;
+        EPITHELIAL = 2;
+        ENDOTHELIAL = 3;
+        FIBROBLAST = 4;
+        ADIPOCYTE = 5;
+        MYOCYTE = 6;
+        ERYTHROCYTE = 7;
+        LEUKOCYTE = 8;
+        STEM_CELL = 9;
+    }
+}
+
+message CellularComponent {
+    protobuf_world.MaterialEntity material_entity = 1;
+    ComponentType type = 2;
+
+    enum ComponentType {
+        COMPONENT_UNSPECIFIED = 0;
+        NUCLEUS = 1;
+        MITOCHONDRION = 2;
+        RIBOSOME = 3;
+        ENDOPLASMIC_RETICULUM = 4;
+        GOLGI_APPARATUS = 5;
+        LYSOSOME = 6;
+        PEROXISOME = 7;
+        CYTOSKELETON = 8;
+        CELL_MEMBRANE = 9;
+    }
+}
+
+// Base organ definition
+message Organ {
+    AnatomicalStructure structure = 1;
+    OrganSystem parent_system = 2;
+    repeated Tissue tissues = 3;
+    repeated BloodVessel blood_supply = 4;
+    repeated Nerve innervation = 5;
+}
